@@ -1,0 +1,28 @@
+---
+# This role configures various files and directories that are requires by
+# other roles in this codebase
+
+- name: create base directories
+  file: dest={{item}} state=directory
+        owner={{root_user}} group={{root_group}} mode=0755
+  with_items:
+    - /srv
+  tags:
+    - base_fhs
+    - common
+
+- name: create /root/bin
+  file: dest=/root/bin state=directory
+        owner={{root_user}} group={{root_group}} mode=0750
+  tags:
+    - base_fhs
+    - common
+
+- name: ensure /bin/sh points to bash
+  alternatives:
+    name: default-shell
+    link: /bin/sh
+    path: /bin/bash
+  tags:
+    - base_fhs
+    - common

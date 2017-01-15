@@ -1,0 +1,16 @@
+---
+# This file contains the handlers for the repositories role
+
+- name: update pkgng cache
+  shell: pkg update -f
+  when: ansible_os_family == 'FreeBSD'
+  tags:
+    - repositories
+    - notification
+
+- name: update apt cache
+  shell: "aptitude update"
+  when: ansible_os_family == 'Debian'
+  tags:
+    - repositories
+    - notifications

@@ -1,0 +1,57 @@
+---
+# This role configures software repositories
+
+- name: install required packages
+  apt: name={{item}} state=installed
+  with_items:
+    - aptitude
+    - unattended-upgrades
+    - apt-transport-https
+  tags:
+    - repositories
+    - common
+
+- name: configure apt
+  template: src={{item}}.j2 dest=/etc/apt/apt.conf.d/{{item}}
+        owner={{root_user}} group={{root_group}} mode=0644
+  with_items:
+    - 00pinning
+    - 20auto-upgrades
+  tags:
+    - repositories
+    - common
+
+- name: install sources.list
+  template: src=sources.list.j2 dest=/etc/apt/sources.list
+            owner={{root_user}} group={{root_group}} mode=0644
+  tags:
+    - repositories
+    - common
+
+- name: install backports repository
+  template: src=backports.list.j2
+            dest=/etc/apt/sources.list.d/backports.list
+            owner={{root_user}} group={{root_group}} mode=0644
+  tags:
+    - repositories
+    - common
+
+- name: install maintenance scripts
+  copy: src=update_pkg_lists.sh dest=/root/bin/update_pkg_lists.sh
+        owner={{root_user}} group={{root_group}} mode=0750
+  tags:
+    - repositories
+    - common
+
+- name: install maintenance cronjobs
+  cron: name=update_pkg_lists minute=0 hour=0,3,6,9
+        job="/root/bin/update_pkg_lists.sh > /var/log/update_pkg_lists.log 2>&1"
+  tags:
+    - repositories
+    - common
+
+- name: update package repositories
+  shell: "/root/bin/update_pkg_lists.sh >/dev/null 2>&1"
+  tags:
+    - repositories
+    - common

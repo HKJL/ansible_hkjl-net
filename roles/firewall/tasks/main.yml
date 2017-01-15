@@ -17,7 +17,7 @@
     - firewall
     - common
 
-- name: install default iptables ruleset (Debian)
+- name: install default iptables ruleset
   copy: src={{item}} dest=/etc/{{item}}
         owner={{root_user}} group={{root_group}} mode=0644
   with_items:
@@ -30,7 +30,7 @@
     - firewall
     - common
 
-- name: install iptables management scripts (Debian)
+- name: install iptables management scripts
   copy: src={{item}} dest=/root/bin/{{item}}
         owner={{root_user}} group={{root_group}} mode=0755
   with_items:
@@ -65,7 +65,7 @@
     - firewall
     - common
 
-- name: install systemd service (Debian jessie)
+- name: install systemd service
   copy: src=firewall.service dest=/etc/systemd/system/firewall.service
         owner={{root_user}} group={{root_group}} mode=0644
   tags:

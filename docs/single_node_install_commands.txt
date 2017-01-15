@@ -1,0 +1,125 @@
+apt-get install bridge-utils
+vi /etc/network/interfaces.d/br_hkjl-ix (see below)
+ifup br_hkjl-ix (ignore errors)
+apt-get install openvpn easy-rsa
+mkdir -p /etc/openvpn/hkjl-ix
+cp -Rp /usr/share/easy-rsa /etc/openvpn/hkjl-ix/pki
+cd /etc/openvpn/hkjl-ix/pki
+vi ./vars (see below)
+./build-ca (fill in details)
+./build-dh (go do something else)
+./build-key-server <your fully qualified domain name; must be a publicly resolvable name>
+cd ../../
+openvpn --genkey --secret hkjl-ix/ta.key
+vi ./hkjl-ix.conf (see below)
+addgroup --system openvpn
+adduser --system --ingroup openvpn openvpn
+chown -R root:openvpn /etc/openvpn/hkjl-ix*
+find /etc/openvpn/hkjl-ix/pki/keys -type d -exec chmod 0750 {} \;
+find /etc/openvpn/hkjl-ix/pki/keys -type f -exec chmod 0640 {} \;
+mkdir -p /etc/openvpn/hkjl-ix/client-config
+vi /etc/openvpn/hkjl-ix/up.sh (see below)
+vi /etc/openvpn/hkjl-ix/down.sh (see below)
+chmod +x /etc/openvpn/hkjl-ix/*.sh
+vi /etc/sudoers.d/openvpn_hkjl-ix (see below)
+vi /etc/default/openvpn (uncomment / add an AUTOSTART section)
+systemctl daemon-reload
+systemctl enable openvpn
+systemctl start openvpn
+
+br_hkjl-ix
+auto br_hkjl-ix
+iface br_hkjl-ix inet static
+  address 172.31.42.254 # NOTE: configure your own ip address
+  netmask 255.255.255.0
+  bridge_ports hkjl-ix
+
+./vars
+--- /usr/share/easy-rsa/vars        2014-01-07 12:30:20.000000000 +0100
++++ /etc/openvpn/hkjl-ix/pki/vars        2017-01-10 21:01:29.400000000 +0100
+@@ -50,7 +50,7 @@
+ # down TLS negotiation performance
+ # as well as the one-time DH parms
+ # generation process.
+-export KEY_SIZE=2048
++export KEY_SIZE=4096
+ 
+ # In how many days should the root CA key expire?
+ export CA_EXPIRE=3650
+@@ -61,15 +61,15 @@
+ # These are the default values for fields
+ # which will be placed in the certificate.
+ # Don't leave any of these fields blank.
+-export KEY_COUNTRY="US"
+-export KEY_PROVINCE="CA"
+-export KEY_CITY="SanFrancisco"
+-export KEY_ORG="Fort-Funston"
+-export KEY_EMAIL="me@myhost.mydomain"
+-export KEY_OU="MyOrganizationalUnit"
++export KEY_COUNTRY="NL"
++export KEY_PROVINCE="Utrecht"
++export KEY_CITY="Amersfoort"
++export KEY_ORG="HKJL-NET"
++export KEY_EMAIL="r3boot@r3blog.nl"
++export KEY_OU="IX model testbed"
+ 
+ # X509 Subject Field
+-export KEY_NAME="EasyRSA"
++export KEY_NAME="HKJL-PKI-TEST"
+ 
+ # PKCS11 Smart Card
+ # export PKCS11_MODULE_PATH="/usr/lib/changeme.so"
+
+hkjl-ix.conf
+local 10.42.2.11
+port 1984
+proto tcp-server
+mode server
+tls-server
+dev hkjl-ix
+dev-type tap
+socket-flags TCP_NODELAY
+user openvpn
+group openvpn
+
+ca /etc/openvpn/hkjl-ix/pki/keys/ca.crt
+cert /etc/openvpn/hkjl-ix/pki/keys/hkjl-ix-01.as65342.net.crt # NOTE: add your own hostname
+key /etc/openvpn/hkjl-ix/pki/keys/hkjl-ix-01.as65342.net.key # NOTE: add your own hostname
+dh /etc/openvpn/hkjl-ix/pki/keys/dh4096.pem
+tls-auth /etc/openvpn/hkjl-ix/ta.key 0
+
+up "/usr/bin/sudo /etc/openvpn/hkjl-ix/up.sh"
+down "/usr/bin/sudo /etc/openvpn/hkjl-ix/down.sh"
+client-config-dir /etc/openvpn/hkjl-ix/client-config
+log-append /var/log/openvpn-hkjl-ix.log
+status /var/run/openvpn-hkjl-ix.status
+
+cipher AES-256-CBC
+comp-lzo
+max-clients 512
+#client-to-client
+persist-key
+persist-tun
+#mlock
+nice -5
+verb 3
+keepalive 10 120
+script-security 2
+
+up.sh
+#!/bin/sh
+
+ip link set ${1} up
+sysctl -w net.ipv6.conf.${1}.accept_ra=0
+echo 0 > /proc/sys/net/ipv4/conf/${1}/rp_filter
+ip link set ${1} mtu 1280 up
+brctl addif br_hkjl-ix ${1}
+
+down.sh
+#!/bin/sh
+
+brctl delif br_hkjl-ix ${1}
+
+openvpn_hkjl-ix
+openvpn ALL=(ALL) NOPASSWD: /etc/openvpn/hkjl-ix/up.sh, /etc/openvpn/hkjl-ix/down.sh
+

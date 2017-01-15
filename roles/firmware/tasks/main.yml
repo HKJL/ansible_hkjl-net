@@ -11,6 +11,7 @@
 - name: check if realtek network cards are installed
   shell: "lspci | grep -q 'Ethernet controller: Realtek'"
   register: realtek_present
+  when: ansible_local.host.type == 'physical'
   ignore_errors: True
   tags:
     - firmware

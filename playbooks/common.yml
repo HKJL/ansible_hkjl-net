@@ -11,3 +11,4 @@
     - firewall
     - repositories
     - firmware
+    - base_software

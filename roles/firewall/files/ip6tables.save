@@ -1,0 +1,25 @@
+*filter
+:INPUT DROP [1:96]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [24:4144]
+:FROM_LL - [0:0]
+:FROM_PUBLIC - [0:0]
+:FROM_NETWORK - [0:0]
+:FROM_NMS - [0:0]
+:FROM_TRUSTED - [0:0]
+-A INPUT -i lo -j ACCEPT
+-A INPUT -m conntrack --ctstate ESTABLISHED -j ACCEPT
+-A INPUT -m conntrack --ctstate INVALID -j LOG --log-prefix "DROP INVALID: "
+-A INPUT -s fe80::/64 -j FROM_LL
+-A INPUT -j FROM_PUBLIC
+-A INPUT -j LOG --log-prefix "DROP INPUT: "
+-A FROM_LL -d fe80::/64 -p ipv6-icmp -j ACCEPT
+-A FROM_LL -d ff02::/64 -p ipv6-icmp -j ACCEPT
+-A FROM_LL -j RETURN
+-A FROM_PUBLIC -j RETURN
+-A FROM_NETWORK -p ipv6-icmp -j ACCEPT
+-A FROM_NETWORK -j RETURN
+-A FROM_NMS -j RETURN
+-A FROM_TRUSTED -p tcp -m tcp --dport 22 -m conntrack --ctstate NEW -j ACCEPT
+-A FROM_TRUSTED -j RETURN
+COMMIT

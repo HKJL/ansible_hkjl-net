@@ -1,0 +1,35 @@
+#!/bin/bash
+
+RULESET='/etc/iptables.save'
+TMPFILE=$(mktemp /tmp/save-iptables.XXXXXX)
+
+iptables-save | egrep -v '^#' > ${TMPFILE}
+
+if [ ! -f ${RULESET} ]; then
+    echo '[+] No boot-time ruleset found, saving current'
+    mv ${TMPFILE} ${RULESET}
+else
+    echo '[+] Displaying differences between current and boot-time ruleset'
+    egrep -v '^:|^COMMIT' ${TMPFILE} > ${TMPFILE}.current
+    egrep -v '^:|^COMMIT' ${RULESET} > ${TMPFILE}.boot-time
+    diff -u ${TMPFILE}.boot-time ${TMPFILE}.current
+    if [ ${?} -eq 1 ]; then
+        echo -en '\nDo you want to save the current ruleset? [Enter to confirm]'
+        read ANSWER
+        case ${ANSWER} in
+          '')
+              echo '[+] Saving current ruleset to boot-time ruleset'
+              mv ${TMPFILE} ${RULESET}
+              ;;
+          *)
+              echo '[E] Invalid input'
+              ;;
+        esac
+    else
+        echo '[+] No differences between current and boot-time ruleset'
+    fi
+    rm -f ${TMPFILE}.current
+    rm -f ${TMPFILE}.boot-time
+fi
+
+rm -f ${TMPFILE}

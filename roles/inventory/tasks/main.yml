@@ -10,6 +10,7 @@
     - ansible/facts.d
   tags:
     - inventory
+    - common
 
 - name: install facts
   template: src={{item}}.j2 dest=/etc/ansible/facts.d/{{item}}
@@ -19,8 +20,10 @@
     - host.fact
   tags:
     - inventory
+    - common
 
 - name: re-read custom facts
   setup: filter=ansible_local
   tags:
     - inventory
+    - common

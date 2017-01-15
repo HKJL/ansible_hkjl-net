@@ -1,0 +1,79 @@
+---
+# This task configures a firewall on a node
+
+- name: install required packages
+  apt: name={{item}} state=present
+  with_items:
+    - iptables
+  tags:
+    - firewall
+    - common
+
+- name: check if iptables ruleset is installed (Debian)
+  shell: "stat /etc/iptables.save >/dev/null 2>&1"
+  register: ruleset_installed
+  ignore_errors: True
+  tags:
+    - firewall
+    - common
+
+- name: install default iptables ruleset (Debian)
+  copy: src={{item}} dest=/etc/{{item}}
+        owner={{root_user}} group={{root_group}} mode=0644
+  with_items:
+    - iptables.save
+    - ip6tables.save
+    - iptables.flush
+    - ip6tables.flush
+  when: ruleset_installed|failed
+  tags:
+    - firewall
+    - common
+
+- name: install iptables management scripts (Debian)
+  copy: src={{item}} dest=/root/bin/{{item}}
+        owner={{root_user}} group={{root_group}} mode=0755
+  with_items:
+    - list-iptables
+    - save-iptables
+    - list-ip6tables
+    - save-ip6tables
+    - firewall
+  tags:
+    - firewall
+    - common
+
+- name: load default ruleset
+  shell: "/root/bin/firewall load"
+  when: ruleset_installed|failed
+  tags:
+    - firewall
+    - common
+
+# TODO: only enable on non-development
+#- name: allow icmpv6 to this host
+#  shell: "ip6tables -I FROM_LL -d {{ansible_default_ipv6.address}} -p icmpv6 -j ACCEPT"
+#  when: ruleset_installed|failed and ansible_local.networking.has_ipv6 == True
+#  tags:
+#    - firewall
+#    - common
+
+- name: save ip6tables ruleset
+  shell: "/root/bin/save-ip6tables </dev/null"
+  when: ruleset_installed|failed
+  tags:
+    - firewall
+    - common
+
+- name: install systemd service (Debian jessie)
+  copy: src=firewall.service dest=/etc/systemd/system/firewall.service
+        owner={{root_user}} group={{root_group}} mode=0644
+  tags:
+    - firewall
+    - common
+
+- name: enable and start firewall during boot
+  service: name=firewall enabled=yes state=running
+  tags:
+    - firewall
+    - common

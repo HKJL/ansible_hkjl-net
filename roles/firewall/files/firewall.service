@@ -1,0 +1,12 @@
+[Unit]
+Description=Netfilter based firewalling
+After=network.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/root/bin/firewall load
+ExecStop=/root/bin/firewall unload
+
+[Install]
+WantedBy=multi-user.target

@@ -8,3 +8,4 @@
   roles:
     - inventory
     - base_fhs
+    - firewall

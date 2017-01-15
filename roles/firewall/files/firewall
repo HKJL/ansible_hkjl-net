@@ -1,0 +1,15 @@
+#!/bin/bash
+
+case "${1}" in
+    'load')
+        /sbin/iptables-restore < /etc/iptables.save
+        /sbin/ip6tables-restore < /etc/ip6tables.save
+        ;;
+    'unload')
+        /sbin/iptables-restore < /etc/iptables.flush
+        /sbin/ip6tables-restore < /etc/ip6tables.flush
+        ;;
+    *) echo "Usage: $(basename ${0}) <load|unload>" ;;
+esac
+
+exit 0

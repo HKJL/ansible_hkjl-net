@@ -1,0 +1,39 @@
+# Add debian/jessie box using the virtualbox provider
+$ vagrant box add debian/jessie64
+==> box: Loading metadata for box 'debian/jessie64'
+    box: URL: https://atlas.hashicorp.com/debian/jessie64
+    This box can work with multiple providers! The providers that it
+    can work with are listed below. Please review the list and choose
+    the provider you will be working with.
+
+    1) libvirt
+    2) lxc
+    3) virtualbox
+
+    Enter your choice: 3
+    ==> box: Adding box 'debian/jessie64' (v8.6.1) for provider: virtualbox
+        box: Downloading: https://atlas.hashicorp.com/debian/boxes/jessie64/versions/8.6.1/providers/virtualbox.box
+        ==> box: Successfully added box 'debian/jessie64' (v8.6.1) for 'virtualbox'!
+$
+
+# Setup networking
+Start up virtualbox and navigate to File -> Preferences -> Network. Go to 
+'Host-only Networks', and add a new network with the default properties:
+
+ipv4 address: 10.0.3.1
+ipv4 network mask: 255.255.255.0
+ipv6 address: <empty>
+ipv6 network mask length: 0
+
+It is up to you if you configure a DHCP server for this network, but it is
+preferred to keep it off. If you do enable it, be sure to keep the ip range
+from 10 to 20 free for static ip addressing purposes.
+
+# Vagrant workflow
+- Make change to codebase
+- Run commands to update vagrant box:
+$ vagrant rsync <your development hostname>
+$ vagrant provision <your development hostname>
+- Test your changes inside vagrant box
+
+Once a change is complete, and working inside vagrant, commit to master

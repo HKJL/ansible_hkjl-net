@@ -1,0 +1,5 @@
+---
+
+# Default root user and group
+root_user: 'root'
+root_group: 'root'

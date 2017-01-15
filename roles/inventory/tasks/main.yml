@@ -1,0 +1,26 @@
+---
+# This task performs an inventory of several interesting
+# things on a system and installs facts for it
+
+- name: create facts directory
+  file: dest=/etc/{{item}} state=directory
+        owner={{root_user}} group={{root_group}} mode=0755
+  with_items:
+    - ansible
+    - ansible/facts.d
+  tags:
+    - inventory
+
+- name: install facts
+  template: src={{item}}.j2 dest=/etc/ansible/facts.d/{{item}}
+            owner={{root_user}} group={{root_group}} mode=0644
+  with_items:
+    - networking.fact
+    - host.fact
+  tags:
+    - inventory
+
+- name: re-read custom facts
+  setup: filter=ansible_local
+  tags:
+    - inventory

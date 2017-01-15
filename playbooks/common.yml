@@ -1,0 +1,9 @@
+---
+# This playbook contains the common tasks which are applied to all nodes in
+# the HKJL network.
+
+- name: inventorize and setup facts
+  hosts: all
+  sudo: yes
+  roles:
+    - inventory

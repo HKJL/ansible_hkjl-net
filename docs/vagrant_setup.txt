@@ -30,10 +30,13 @@ preferred to keep it off. If you do enable it, be sure to keep the ip range
 from 10 to 20 free for static ip addressing purposes.
 
 # Vagrant workflow
+- Bring up virtual machine using:
+$ vagrant up <your development hostname>
 - Make change to codebase
 - Run commands to update vagrant box:
 $ vagrant rsync <your development hostname>
 $ vagrant provision <your development hostname>
 - Test your changes inside vagrant box
+- Repeat until satisfied
 
 Once a change is complete, and working inside vagrant, commit to master

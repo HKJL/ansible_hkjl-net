@@ -10,3 +10,4 @@
     - base_fhs
     - firewall
     - repositories
+    - firmware

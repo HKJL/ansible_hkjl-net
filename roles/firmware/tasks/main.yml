@@ -1,0 +1,56 @@
+---
+# This task configures (non-)free firmware on this node
+
+- name: install non-free firmware
+  apt: name=firmware-linux-nonfree state=present
+  when: ansible_local.host.type == 'physical'
+  tags:
+    - firmware
+    - common
+
+- name: check if realtek network cards are installed
+  shell: "lspci | grep -q 'Ethernet controller: Realtek'"
+  register: realtek_present
+  ignore_errors: True
+  tags:
+    - firmware
+    - common
+
+- name: install realtek firmware
+  apt: name=firmware-realtek state=present
+  when: ansible_local.host.type == 'physical' and realtek_present
+  tags:
+    - firmware
+    - common
+
+- name: check if we are running on an Amd CPU
+  shell: "grep -q AuthenticAMD /proc/cpuinfo"
+  register: amd_cpu_present
+  ignore_errors: True
+  when: ansible_local.host.type == 'physical'
+  tags:
+    - firmware
+    - common
+
+- name: check if we are running on an Intel CPU
+  shell: "grep -q GenuineIntel /proc/cpuinfo"
+  register: intel_cpu_present
+  ignore_errors: True
+  when: ansible_local.host.type == 'physical'
+  tags:
+    - firmware
+    - common
+
+- name: install Amd CPU microcode updates
+  apt: name=amd64-microcode state=present
+  when: ansible_local.host.type == 'physical' and intel_cpu_present|failed
+  tags:
+    - firmware
+    - common
+
+- name: install Intel CPU microcode updates
+  apt: name=intel-microcode state=present
+  when: ansible_local.host.type == 'physical' and amd_cpu_present|failed
+  tags:
+    - firmware
+    - common

@@ -14,3 +14,4 @@
     - base_software
     - haveged
     - ntp
+    - sudo

@@ -1,0 +1,22 @@
+---
+# This task configures sudo on a node
+
+- name: install sudo
+  apt: name=sudo state=present
+  tags:
+    - sudo
+    - common
+
+- name: install sudoers file
+  template: src=sudoers.j2 dest=/etc/sudoers
+            owner={{root_user}} group={{root_group}} mode=0440
+  tags:
+    - sudo
+    - common
+
+- name: install sudoers.d directory
+  file: dest=/etc/sudoers.d state=directory
+        owner={{root_user}} group={{root_group}} mode=0750
+  tags:
+    - sudo
+    - common

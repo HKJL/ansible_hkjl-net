@@ -1,0 +1,25 @@
+---
+# This task installs various system utilities
+
+- name: installing base packages
+  apt: name={{item}} state=present
+  with_items:
+    - bash
+    - bash-completion
+    - dstat
+    - curl
+    - lsb-core
+    - lynis
+    - rsync
+    - nmap
+    - tcpdump
+    - tmux
+    - sipcalc
+    - strace
+    - sysstat
+    - vim-nox
+    - wget
+    - zsh
+  tags:
+    - base_software
+    - common

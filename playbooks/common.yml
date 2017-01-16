@@ -12,3 +12,4 @@
     - repositories
     - firmware
     - base_software
+    - haveged

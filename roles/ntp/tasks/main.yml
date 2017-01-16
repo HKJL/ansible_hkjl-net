@@ -1,0 +1,23 @@
+---
+# This task configures ntp on a system
+
+- name: install ntpd
+  apt: name=ntp state=present
+  tags:
+    - ntp
+    - common
+
+- name: install /etc/ntp.conf
+  template: src=ntp.conf.j2 dest=/etc/ntp.conf
+            owner={{root_user}} group={{root_group}} mode=0644
+  notify:
+    - restart ntpd
+  tags:
+    - ntp
+    - common
+
+- name: enable and start during boot
+  service: name=ntp enabled=yes state=started
+  tags:
+    - ntp
+    - common

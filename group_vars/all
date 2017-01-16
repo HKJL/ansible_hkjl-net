@@ -3,3 +3,13 @@
 # Default root user and group
 root_user: 'root'
 root_group: 'root'
+
+# Default ntp servers
+ntp_servers:
+  - '0.nl.pool.ntp.org'
+  - '1.nl.pool.ntp.org'
+  - '2.nl.pool.ntp.org'
+  - '3.nl.pool.ntp.org'
+
+# Default ntp peers. Override this on a per-server basis
+ntp_peers: []

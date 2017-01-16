@@ -1,0 +1,20 @@
+driftfile /var/lib/ntp/ntp.drift
+statsdir /var/log/ntpstats/
+statistics loopstats peerstats clockstats
+filegen loopstats file loopstats type day enable
+filegen peerstats file peerstats type day enable
+filegen clockstats file clockstats type day enable
+restrict -4 default kod notrap nomodify nopeer
+restrict -6 default kod notrap nomodify nopeer
+restrict 127.0.0.1
+restrict ::1
+disable monitor
+
+{% for server in ntp_servers %}
+server {{server}} burst iburst
+{% endfor %}
+{% if ntp_peers is defined %}
+{% for peer in ntp_peers %}
+peer {{peer}}
+{% endfor %}
+{% endif %}

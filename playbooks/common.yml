@@ -13,3 +13,4 @@
     - firmware
     - base_software
     - haveged
+    - ntp

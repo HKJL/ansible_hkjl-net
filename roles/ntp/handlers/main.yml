@@ -1,0 +1,8 @@
+---
+# This file has the handlers for the ntp tasks
+
+- name: restart ntpd
+  service: name=ntp state=restarted
+  tags:
+    - ntp
+    - common

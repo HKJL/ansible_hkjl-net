@@ -1,0 +1,8 @@
+---
+# This file contains the handlers for the server hardening task
+
+- name: reload sysctl
+  shell: "sysctl -f"
+  tags:
+    - server_hardening
+    - common

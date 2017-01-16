@@ -1,0 +1,34 @@
+---
+# This file performs various steps to harden a debian system
+
+- name: install required packages
+  apt: name={{item}} state=present
+  with_items:
+    - libpam-passwdqc
+    - passwdqc
+  tags:
+    - server_hardening
+    - common
+
+- name: install custom login.defs
+  template: src=login.defs.j2 dest=/etc/login.defs
+            owner={{root_user}} group={{root_group}} mode=0644
+  when: ansible_os_family == 'Debian'
+  tags:
+    - server_hardening
+    - common
+
+- name: set sane umask in /etc/init.d/rc
+  template: src=rc.jessie.j2 dest=/etc/init.d/rc
+            owner={{root_user}} group={{root_group}} mode=0755
+  tags:
+    - server_hardening
+    - common
+
+- name: set sysctl values
+  sysctl: name={{item.name}} value={{item.value}} state=present
+          sysctl_set=yes sysctl_file=/etc/sysctl.d/10-hardening.conf reload=yes
+  with_items: sysctl_settings
+  tags:
+    - server_hardening
+    - common

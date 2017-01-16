@@ -18,8 +18,8 @@
     - common
 
 - name: install default iptables ruleset
-  copy: src={{item}} dest=/etc/{{item}}
-        owner={{root_user}} group={{root_group}} mode=0644
+  template: src={{item}}.j2 dest=/etc/{{item}}
+            owner={{root_user}} group={{root_group}} mode=0644
   with_items:
     - iptables.save
     - ip6tables.save
@@ -31,8 +31,8 @@
     - common
 
 - name: install iptables management scripts
-  copy: src={{item}} dest=/root/bin/{{item}}
-        owner={{root_user}} group={{root_group}} mode=0755
+  template: src={{item}}.j2 dest=/root/bin/{{item}}
+            owner={{root_user}} group={{root_group}} mode=0755
   with_items:
     - list-iptables
     - save-iptables
@@ -66,8 +66,8 @@
     - common
 
 - name: install systemd service
-  copy: src=firewall.service dest=/etc/systemd/system/firewall.service
-        owner={{root_user}} group={{root_group}} mode=0644
+  template: src=firewall.service.j2 dest=/etc/systemd/system/firewall.service
+            owner={{root_user}} group={{root_group}} mode=0644
   tags:
     - firewall
     - common

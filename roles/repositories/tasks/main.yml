@@ -37,8 +37,8 @@
     - common
 
 - name: install maintenance scripts
-  copy: src=update_pkg_lists.sh dest=/root/bin/update_pkg_lists.sh
-        owner={{root_user}} group={{root_group}} mode=0750
+  template: src=update_pkg_lists.sh.j2 dest=/root/bin/update_pkg_lists.sh
+            owner={{root_user}} group={{root_group}} mode=0750
   tags:
     - repositories
     - common

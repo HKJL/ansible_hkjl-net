@@ -1,0 +1,14 @@
+---
+# This task configures haveged on a system
+
+- name: install haveged
+  apt: name=haveged state=present
+  tags:
+    - haveged
+    - common
+
+- name: enable haveged during system boot
+  service: name=haveged enabled=yes state=started
+  tags:
+    - haveged
+    - common

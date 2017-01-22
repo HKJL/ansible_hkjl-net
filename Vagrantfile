@@ -6,15 +6,13 @@
 $development_groups = {
   "development_hosts" => [
     "nms.dev",
-    "ix01.dev",
-    "ix02.dev",
+    "bokkusu.dev",
   ],
   "management_servers" => [
     "nms.dev",
   ],
   "ix_servers" => [
-    "ix01.dev",
-    "ix02.dev",
+    "bokkusu.dev",
   ],
 }
 
@@ -94,13 +92,8 @@ Vagrant.configure(2) do |config|
   #             is connected to a bridge, which in turn is connected to other
   #             IX core nodes on the network. Spanning tree must be enabled to
   #             prevent the network from forming layer 2 loops.
-  config.vm.define "ix01.dev" do |ix01|
-    ix01.vm.hostname = "ix01.dev"
-    ix01.vm.network "private_network", ip: "10.0.3.11"
-  end
-
-  config.vm.define "ix01.dev" do |ix02|
-    ix02.vm.hostname = "ix02.dev"
-    ix02.vm.network "private_network", ip: "10.0.3.12"
+  config.vm.define "bokkusu.dev" do |bokkusu|
+    bokkusu.vm.hostname = "bokkusu.dev"
+    bokkusu.vm.network "private_network", ip: "10.0.3.11"
   end
 end

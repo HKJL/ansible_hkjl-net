@@ -28,7 +28,15 @@
 - name: set sysctl values
   sysctl: name={{item.name}} value={{item.value}} state=present
           sysctl_set=yes sysctl_file=/etc/sysctl.d/10-hardening.conf reload=yes
-  with_items: sysctl_settings
+  with_items: "{{ sysctl_settings }}"
+  tags:
+    - server_hardening
+    - common
+
+- name: disable loading of usb + firewire storage devices
+  template: src=blacklist_storage.conf.j2
+            dest=/etc/modprobe.d/blacklist_storage.conf
+            owner={{root_user}} group={{root_group}} mode=0644
   tags:
     - server_hardening
     - common

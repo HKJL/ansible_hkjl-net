@@ -16,59 +16,31 @@ ntp_peers: []
 
 # Defaults sysctl settings
 sysctl_settings:
-  - name: 'net.ipv4.conf.default.rp_filter'
-    value: '1'
-  - name: 'net.ipv4.conf.all.rp_filter'
-    value: '1'
-  - name: 'net.ipv4.tcp_syncookies'
-    value: '1'
-  - name: 'net.ipv4.ip_forward'
-    value: '0'
-  - name: 'net.ipv4.tcp_timestamps'
-    value: '0'
-  - name: 'net.ipv6.conf.all.forwarding'
-    value: '0'
-  - name: 'net.ipv4.conf.all.accept_redirects'
-    value: '0'
-  - name: 'net.ipv4.conf.default.accept_redirects'
-    value: '0'
-  - name: 'net.ipv6.conf.all.accept_redirects'
-    value: '0'
-  - name: 'net.ipv6.conf.default.accept_redirects'
-    value: '0'
-  - name: 'net.ipv4.conf.all.send_redirects'
-    value: '0'
-  - name: 'net.ipv4.conf.all.accept_source_route'
-    value: '0'
-  - name: 'net.ipv4.conf.default.accept_source_route'
-    value: '0'
-  - name: 'net.ipv6.conf.all.accept_source_route'
-    value: '0'
-  - name: 'net.ipv4.conf.all.log_martians'
-    value: '1'
-  - name: 'net.ipv4.conf.default.log_martians'
-    value: '1'
-  - name: 'net.ipv6.conf.all.accept_ra'
-    value: '0'
-  - name: 'net.ipv6.conf.all.accept_ra_defrtr'
-    value: '0'
-  - name: 'net.ipv6.conf.all.accept_ra_pinfo'
-    value: '0'
-  - name: 'net.ipv6.conf.default.accept_ra'
-    value: '0'
-  - name: 'net.ipv6.conf.default.accept_ra_defrtr'
-    value: '0'
-  - name: 'net.ipv6.conf.default.accept_ra_pinfo'
-    value: '0'
-  - name: 'net.ipv6.conf.eth0.accept_ra'
-    value: '0'
-  - name: 'net.ipv6.conf.eth0.accept_ra_defrtr'
-    value: '0'
-  - name: 'net.ipv6.conf.eth0.accept_ra_pinfo'
-    value: '0'
-  - name: 'vm.swappiness'
-    value: '1'
-  - name: 'kernel.core_uses_pid'
-    value: '1'
-  - name: 'kernel.sysrq'
-    value: '0'
+  - {name: 'net.ipv4.conf.default.rp_filter', value: '1'}
+  - {name: 'net.ipv4.conf.all.rp_filter', value: '1'}
+  - {name: 'net.ipv4.tcp_syncookies', value: '1'}
+  - {name: 'net.ipv4.ip_forward', value: '0'}
+  - {name: 'net.ipv4.tcp_timestamps', value: '0'}
+  - {name: 'net.ipv6.conf.all.forwarding', value: '0'}
+  - {name: 'net.ipv4.conf.all.accept_redirects', value: '0'}
+  - {name: 'net.ipv4.conf.default.accept_redirects', value: '0'}
+  - {name: 'net.ipv6.conf.all.accept_redirects', value: '0'}
+  - {name: 'net.ipv6.conf.default.accept_redirects', value: '0'}
+  - {name: 'net.ipv4.conf.all.send_redirects', value: '0'}
+  - {name: 'net.ipv4.conf.all.accept_source_route', value: '0'}
+  - {name: 'net.ipv4.conf.default.accept_source_route', value: '0'}
+  - {name: 'net.ipv6.conf.all.accept_source_route', value: '0'}
+  - {name: 'net.ipv4.conf.all.log_martians', value: '1'}
+  - {name: 'net.ipv4.conf.default.log_martians', value: '1'}
+  - {name: 'net.ipv6.conf.all.accept_ra', value: '0'}
+  - {name: 'net.ipv6.conf.all.accept_ra_defrtr', value: '0'}
+  - {name: 'net.ipv6.conf.all.accept_ra_pinfo', value: '0'}
+  - {name: 'net.ipv6.conf.default.accept_ra', value: '0'}
+  - {name: 'net.ipv6.conf.default.accept_ra_defrtr', value: '0'}
+  - {name: 'net.ipv6.conf.default.accept_ra_pinfo', value: '0'}
+  - {name: 'net.ipv6.conf.eth0.accept_ra', value: '0'}
+  - {name: 'net.ipv6.conf.eth0.accept_ra_defrtr', value: '0'}
+  - {name: 'net.ipv6.conf.eth0.accept_ra_pinfo', value: '0'}
+  - {name: 'vm.swappiness', value: '1'}
+  - {name: 'kernel.core_uses_pid', value: '1'}
+  - {name: 'kernel.sysrq', value: '0'}

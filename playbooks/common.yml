@@ -5,6 +5,7 @@
 - name: Configure the base distribution
   hosts: all
   sudo: yes
+  sudo_user: root
   roles:
     - inventory
     - base_fhs

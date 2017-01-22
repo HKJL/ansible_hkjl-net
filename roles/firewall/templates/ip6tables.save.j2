@@ -15,6 +15,11 @@
 -A INPUT -m conntrack --ctstate INVALID -j LOG --log-prefix "DROP INVALID: "
 -A INPUT -s fe80::/64 -j FROM_LL
 -A INPUT -j FROM_PUBLIC
+-A INPUT -s 2001:7b8:607:12::/64 -j FROM_TRUSTED
+-A INPUT -s 2a02:58:db:c514::/64 -j FROM_TRUSTED
+-A INPUT -s 2001:7b8:607::/48 -j FROM_NETWORK
+-A INPUT -s 2a02:58:db:c500::/56 -j FROM_NETWORK
+-A INPUT -s 2a02:898:62:1590::/60 -j FROM_NETWORK
 -A INPUT -j LOG --log-prefix "DROP INPUT: "
 -A FROM_LL -d fe80::/64 -p ipv6-icmp -j ACCEPT
 -A FROM_LL -d ff02::/64 -p ipv6-icmp -j ACCEPT

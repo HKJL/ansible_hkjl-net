@@ -17,3 +17,4 @@
     - ntp
     - sudo
     - server_hardening
+    - ssl

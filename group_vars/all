@@ -4,6 +4,9 @@
 root_user: 'root'
 root_group: 'root'
 
+# User/group for ssl related permissions
+ssl_group: 'ssl'
+
 # Default ntp servers
 ntp_servers:
   - '0.nl.pool.ntp.org'

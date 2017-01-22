@@ -1,0 +1,43 @@
+---
+# This task configures the AS65342 ssl on a host
+
+- name: install required packages (Jessie)
+  apt: name={{item}} state=present
+  with_items:
+    - openssl
+    - ssl-cert
+  tags:
+    - ssl
+
+- name: add ssl group
+  group: name={{ssl_group}} system=yes state=present
+  tags:
+    - ssl
+
+- name: remove snakeoil certificate
+  file: dest=/etc/ssl/{{item}} state=absent
+  with_items:
+    - certs/ssl-cert-snakeoil.key
+    - private/ssl-cert-snakeoil.key
+  tags:
+    - ssl
+
+- name: check if dhparams.pem exists for this host
+  shell: "stat /etc/ssl/private/dhparams.pem >/dev/null 2>&1"
+  register: has_dhparams
+  ignore_errors: True
+  tags:
+    - ssl
+
+- name: generate dhparams.pem for this host
+  shell: "openssl dhparam -out /etc/ssl/private/dhparams.pem 2048 >/dev/null 2>&1"
+  when: has_dhparams|failed
+  tags:
+    - ssl
+
+- name: fix permissions for dhparams.pem
+  file: dest=/etc/ssl/private/dhparams.pem state=file
+        owner={{root_user}} group={{ssl_group}} mode=0640
+  when: has_dhparams|failed
+  tags:
+    - ssl

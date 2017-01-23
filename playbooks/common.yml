@@ -13,6 +13,7 @@
     - repositories
     - firmware
     - base_software
+    - locales
     - haveged
     - ntp
     - sudo

@@ -1,0 +1,33 @@
+---
+
+- name: configure UTF-8 locales
+  copy:
+    src: "locale.gen"
+    dest: "/etc/locale.gen"
+    owner: "{{root_user}}"
+    group: "{{root_group}}"
+    mode: "0644"
+  notify:
+    - generate locales
+  tags:
+    - locales
+
+- name: copy locale configuration file
+  copy:
+    src: "locale.conf"
+    dest: "/etc/locale.conf"
+    owner: "{{root_user}}"
+    group: "{{root_group}}"
+    mode: "0644"
+  tags:
+    - locales
+
+- name: add locale setting to profile
+  copy:
+    src: "set_locale.sh"
+    dest: "/etc/profile.d/set_locale.sh"
+    owner: "{{root_user}}"
+    group: "{{root_group}}"
+    mode: "0644"
+  with_items:
+    - locales

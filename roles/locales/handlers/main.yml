@@ -1,0 +1,7 @@
+---
+# This module contains the handlers for the locale role
+
+- name: generate locales
+  shell: "/usr/sbin/locale-gen"
+  tags:
+    - locales

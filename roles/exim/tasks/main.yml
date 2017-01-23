@@ -1,0 +1,35 @@
+---
+# This task configures exim on a node
+
+- name: install required packages
+  apt:
+    name: 'exim4-daemon-light'
+    state: 'present'
+  tags:
+    - exim
+
+- name: install update-exim4.conf.conf
+  template:
+    src: 'update-exim4.conf.conf.j2'
+    dest: '/etc/exim4/update-exim4.conf.conf'
+    owner: '{{root_user}}'
+    group: '{{root_group}}'
+  notify:
+    - reconfigure exim4
+  tags:
+    - exim
+
+- name: install mail aliases
+  template:
+    src: 'aliases.j2'
+    dest: '/etc/aliases'
+    owner: '{{root_user}}'
+    group: '{{root_group}}'
+    mode: '0644'
+  tags:
+    - exim
+
+- name: enable and start during boot
+  service: name=exim4 enabled=yes state=started
+  tags:
+    - exim

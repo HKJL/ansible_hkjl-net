@@ -1,0 +1,16 @@
+#jinja2:trim_blocks: False 
+# /etc/aliases
+hkjl-ops: {% for item in operators %}{{item.email}}{% if not loop.last %},{% endif %}{% endfor %}
+mailer-daemon: postmaster
+postmaster: root
+nobody: root
+hostmaster: root
+usenet: root
+news: root
+webmaster: root
+www: root
+ftp: root
+abuse: root
+noc: root
+security: root
+root: hkjl-ops

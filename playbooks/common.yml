@@ -23,4 +23,5 @@
     - ssh
     - rsyslog
     - snmpd
+    - exim
     - user_management

@@ -1,0 +1,7 @@
+---
+# This file contains the handlers for the exim task
+
+- name: reconfigure exim4
+  shell: "/usr/sbin/update-exim4.conf"
+  tags:
+    - exim

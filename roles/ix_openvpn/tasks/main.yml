@@ -1,0 +1,94 @@
+---
+# This task configures a HKJL-NET specific IX on a node
+
+- name: install required packages
+  apt:
+    name: '{{item}}'
+    state: present
+  with_items:
+    - openvpn
+  tags:
+    - ix_openvpn
+
+- name: add group for openvpn
+  group:
+    name: '{{openvpn_group}}'
+    system: true
+    state: present
+  tags:
+    - ix_openvpn
+
+- name: add user for openvpn
+  user:
+    name: '{{openvpn_user}}'
+    shell: '/usr/sbin/nologin'
+    system: true
+    group: '{{openvpn_group}}'
+    state: present
+  tags:
+    - ix_openvpn
+
+- name: install configuration file
+  template:
+    src: openvpn.conf.j2
+    dest: '/etc/openvpn/{{vpn_name}}.conf'
+    owner: '{{root_user}}'
+    group: '{{openvpn_group}}'
+    mode: '0640'
+  tags:
+    - ix_openvpn
+
+- name: create configuration directories
+  file:
+    dest: '/etc/{{item}}'
+    owner: '{{root_user}}'
+    group: '{{openvpn_group}}'
+    mode: '0750'
+    state: directory
+  with_items:
+    - 'openvpn'
+    - 'openvpn/{{vpn_name}}'
+    - 'openvpn/{{vpn_name}}/client-config'
+    - 'openvpn/{{vpn_name}}/keys'
+  tags:
+    - ix_openvpn
+
+- name: install interface scripts
+  template:
+    src: '{{item}}.j2'
+    dest: '/etc/openvpn/{{vpn_name}}/{{item}}'
+    owner: '{{root_user}}'
+    group: '{{openvpn_group}}'
+    mode: '0750'
+  with_items:
+    - up.sh
+  tags:
+    - ix_openvpn
+
+- name: install sudo permissions
+  template:
+    src: 'bridge.sudoers.j2'
+    dest: '/etc/sudoers.d/openvpn-{{vpn_name}}'
+    owner: '{{root_user}}'
+    group: '{{root_group}}'
+    mode: '0440'
+  tags:
+    - ix_openvpn
+
+- name: add rc defaults
+  template:
+    src: 'openvpn.rcdefaults.j2'
+    dest: '/etc/default/openvpn'
+    owner: '{{root_user}}'
+    group: '{{root_group}}'
+    mode: '0644'
+  tags:
+    - ix_openvpn
+
+- name: enable and start during boot
+  service:
+    name: 'openvpn'
+    enabled: yes
+    state: running
+  tags:
+    - ix_openvpn

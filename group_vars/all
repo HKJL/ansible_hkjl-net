@@ -44,6 +44,14 @@ snmpd_syslocation: 'LOCATION NOT CONFIGURED'
 snmpd_syscontact: 'ops@hkjl'
 snmpd_agentx_enabled: false
 
+# Default settings for IX openvpn
+openvpn_user: 'openvpn'
+openvpn_group: 'openvpn'
+vpn_name: 'hkjl'
+vpn_cipher: 'AES-256-CBC'
+vpn_compression: true
+vpn_maxclients: 256
+
 # Defaults sysctl settings
 sysctl_settings:
   - {name: 'net.ipv4.conf.default.rp_filter', value: '1'}

@@ -8,3 +8,4 @@
   sudo_user: root
   roles:
     - ix_bridge
+    - ix_openvpn

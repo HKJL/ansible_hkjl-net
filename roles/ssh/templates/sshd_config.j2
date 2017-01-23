@@ -118,17 +118,9 @@ X11Forwarding yes
 Banner /etc/issue
 
 # override default of no subsystems
-{% if ansible_os_family == 'FreeBSD' %}
-Subsystem   sftp    /usr/libexec/sftp-server
-{% else %}
 Subsystem   sftp    /usr/lib/openssh/sftp-server
-{% endif %}
 
-{% if ansible_fqdn == 'repos.as65342.net' %}
-AllowGroups {{root_group}} admins {{gitlab_group}}
-{% else %}
-AllowGroups {{root_group}} admins
-{% endif %}
+AllowGroups {{root_group}} {{ops_group}}
 
 # Example of overriding settings on a per-user basis
 Match User root

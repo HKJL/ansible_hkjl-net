@@ -4,7 +4,7 @@
 - name: setup /etc/issue
   copy:
     src: "issue"
-    dest: "/etc/issue.net"
+    dest: "/etc/issue"
     owner: "{{root_user}}"
     group: "{{root_group}}"
     mode: "0644"

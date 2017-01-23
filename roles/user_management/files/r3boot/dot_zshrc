@@ -44,7 +44,7 @@ TERM="xterm-256color"
 export PAGER EDITOR VISUAL TERM
 
 ## Setup PATH
-PATH="/usr/bin:/usr/bin/core_perl:/usr/local/bin:/usr/local/sbin:${HOME}/bin:/opt/android-sdk/platform-tools"
+PATH="/sbin:/usr/sbin:/usr/local/sbin:${HOME}/bin:/bin:/usr/bin:/usr/local/bin"
 export PATH
 
 ## Enable dir colors
@@ -54,8 +54,6 @@ alias ls='ls --color=auto'
 # create a zkbd compatible hash;
 # to add other keys to this hash, see: man 5 terminfo
 typeset -A key
-
-/usr/bin/setxkbmap -option ctrl:nocaps
 
 key[Home]=${terminfo[khome]}
 key[End]=${terminfo[kend]}

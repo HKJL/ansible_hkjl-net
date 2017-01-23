@@ -1,0 +1,80 @@
+---
+# This task configures the most important user directories
+
+- name: create operator group
+  group:
+    name: "{{ops_group}}"
+    state: present
+  tags:
+    - user_management
+
+- name: create operator accounts
+  user:
+    name: "{{item.username}}"
+    comment: "{{item.realname}}"
+    group: "{{item.group}}"
+    groups: "{{default_groups}}"
+    shell: "{{item.shell}}"
+    state: present
+  with_items: "{{operators}}"
+  tags:
+    - user_management
+
+- name: setup permissions for /root
+  file:
+    dest: "/root"
+    owner: "{{root_user}}"
+    group: "{{ops_group}}"
+    mode: "0750"
+    state: directory
+  tags:
+    - user_management
+
+- name: setup files in /root
+  copy:
+    src: "root/{{item.src}}"
+    dest: "/root/{{item.dst}}"
+    owner: "{{root_user}}"
+    group: "{{root_group}}"
+    mode: "{{item.mode}}"
+  with_items:
+    - {src: 'dot_bashrc', dst: '.bashrc', mode: '0640'}
+  tags:
+    - user_management
+
+- name: setup permissions for homedirs
+  file:
+    dest: "/home/{{item.username}}"
+    owner: "{{item.username}}"
+    group: "{{ops_group}}"
+    mode: "0750"
+    state: directory
+  with_items: "{{operators}}"
+  tags:
+    - user_management
+
+- name: secure .ssh directory for operators
+  file:
+    dest: "/home/{{item.username}}/.ssh"
+    owner: "{{item.username}}"
+    group: "{{ops_group}}"
+    mode: "0700"
+    state: directory
+  with_items: "{{operators}}"
+  tags:
+    - user_management
+
+- name: setup files in /home/r3boot
+  copy:
+    src: "r3boot/{{item.src}}"
+    dest: "/home/r3boot/{{item.dst}}"
+    owner: "r3boot"
+    group: "{{ops_group}}"
+    mode: "{{item.mode}}"
+  with_items:
+    - {src: 'dot_aliases', dst: '.aliases', mode: '0640'}
+    - {src: 'dot_authorized_keys', dst: '.ssh/authorized_keys', mode: '0400'}
+    - {src: 'dot_dircolors.db', dst: '.dircolors.db', mode: '0640'}
+    - {src: 'dot_zshrc', dst: '.zshrc', mode: '0640'}
+  tags:
+    - user_management

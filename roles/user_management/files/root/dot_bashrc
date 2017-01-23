@@ -1,0 +1,14 @@
+PS1="\h [\W]# "
+PAGER="less"
+EDITOR="vim"
+VISUAL="${EDITOR}"
+PATH="/sbin:/usr/sbin:/usr/local/sbin:${HOME}/bin:/bin:/usr/bin:/usr/local/bin"
+
+export PS1 PAGER EDITOR VISUAL PATH
+
+for SNIPPET in /etc/profile.d/*.sh; do
+	source ${SNIPPET}
+done
+
+alias vi='vim'
+alias dstat='dstat --nocolor'

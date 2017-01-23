@@ -16,11 +16,13 @@ operators:
   - username: 'r3boot'
     realname: 'Lex van Roon'
     email: 'r3boot@r3blog.nl'
+    homedir: '/home/r3boot'
     shell: '/bin/zsh'
     group: 'hkjl-ops'
   - username: 'casdr'
     realname: 'Cas de Reuver'
     email: 'cas@reuver.co'
+    homedir: '/home/casdr'
     shell: '/bin/bash'
     group: 'hkjl-ops'
 

@@ -1,0 +1,118 @@
+## Import additional configurations
+. ${HOME}/.aliases
+
+## Load locales
+. /etc/locale.conf
+export LANG LC_ALL LC_COLLATE
+
+## Enable completion
+zstyle ':completion:*' completer _complete _ignored
+zstyle ':completion:*' menu select
+setopt completealiases
+autoload -Uz compinit
+compinit
+
+## Enable colors
+autoload -U color
+
+local fire1='yellow'
+local fire2='yellow'
+local fire3='red'
+
+## Set various options
+setopt appendhistory nomatch notify
+unsetopt autocd beep extendedglob
+bindkey -e
+
+## History
+setopt HIST_IGNORE_DUPS
+HISTFILE=~/.histfile
+HISTSIZE=1000
+SAVEHIST=1000
+
+## Automatically fix terminal settings
+ttyctl -f
+
+## Set a nice prompt
+PROMPT="%F{red}[%F{blue}%*%F{red}]%f %F{yellow}%m%f %F{magenta}[%f%B%F{magenta}%1~%f%b%F{magenta}]%f %F{28}>>%f "
+
+## Setup editor and pager variables
+PAGER="less"
+EDITOR="vim"
+VISUAL="${EDITOR}"
+TERM="xterm-256color"
+export PAGER EDITOR VISUAL TERM
+
+## Setup PATH
+PATH="/usr/bin:/usr/bin/core_perl:/usr/local/bin:/usr/local/sbin:${HOME}/bin:/opt/android-sdk/platform-tools"
+export PATH
+
+## Enable dir colors
+eval `dircolors ${HOME}/.dircolors.db`
+alias ls='ls --color=auto'
+
+# create a zkbd compatible hash;
+# to add other keys to this hash, see: man 5 terminfo
+typeset -A key
+
+/usr/bin/setxkbmap -option ctrl:nocaps
+
+key[Home]=${terminfo[khome]}
+key[End]=${terminfo[kend]}
+key[Insert]=${terminfo[kich1]}
+key[Delete]=${terminfo[kdch1]}
+key[Up]=${terminfo[kcuu1]}
+key[Down]=${terminfo[kcud1]}
+key[Left]=${terminfo[kcub1]}
+key[Right]=${terminfo[kcuf1]}
+key[PageUp]=${terminfo[kpp]}
+key[PageDown]=${terminfo[knp]}
+
+# setup key accordingly
+[[ -n "${key[Home]}"     ]]  && bindkey  "${key[Home]}"     beginning-of-line
+[[ -n "${key[End]}"      ]]  && bindkey  "${key[End]}"      end-of-line
+[[ -n "${key[Insert]}"   ]]  && bindkey  "${key[Insert]}"   overwrite-mode
+[[ -n "${key[Delete]}"   ]]  && bindkey  "${key[Delete]}"   delete-char
+[[ -n "${key[Up]}"       ]]  && bindkey  "${key[Up]}"       up-line-or-history
+[[ -n "${key[Down]}"     ]]  && bindkey  "${key[Down]}"     down-line-or-history
+[[ -n "${key[Left]}"     ]]  && bindkey  "${key[Left]}"     backward-char
+[[ -n "${key[Right]}"    ]]  && bindkey  "${key[Right]}"    forward-char
+[[ -n "${key[PageUp]}"   ]]  && bindkey  "${key[PageUp]}"   beginning-of-buffer-or-history
+[[ -n "${key[PageDown]}" ]]  && bindkey  "${key[PageDown]}" end-of-buffer-or-history
+
+if (( ${+terminfo[smkx]} )) && (( ${+terminfo[rmkx]} )); then
+    function zle-line-init () {
+        printf '%s' "${terminfo[smkx]}"
+    }
+    function zle-line-finish () {
+        printf '%s' "${terminfo[rmkx]}"
+    }
+    zle -N zle-line-init
+    zle -N zle-line-finish
+fi
+
+# ssh, scp, ping, host
+zstyle ':completion:*:scp:*' tag-order \
+      'hosts:-host hosts:-domain:domain hosts:-ipaddr:IP\ address *'
+zstyle ':completion:*:scp:*' group-order \
+      users files all-files hosts-domain hosts-host hosts-ipaddr
+zstyle ':completion:*:ssh:*' tag-order \
+      users 'hosts:-host hosts:-domain:domain hosts:-ipaddr:IP\ address *'
+zstyle ':completion:*:ssh:*' group-order \
+      hosts-domain hosts-host users hosts-ipaddr
+
+zstyle ':completion:*:(ssh|scp):*:hosts-host' ignored-patterns \
+      '*.*' loopback localhost
+zstyle ':completion:*:(ssh|scp):*:hosts-domain' ignored-patterns \
+      '<->.<->.<->.<->' '^*.*' '*@*'
+zstyle ':completion:*:(ssh|scp):*:hosts-ipaddr' ignored-patterns \
+      '^<->.<->.<->.<->' '127.0.0.<->'
+zstyle ':completion:*:(ssh|scp):*:users' ignored-patterns \
+      adm bin daemon halt lp named shutdown sync
+
+zstyle -e ':completion:*:(ssh|scp):*' hosts 'reply=(
+      ${=${${(f)"$(cat {/etc/ssh_,~/.ssh/known_}hosts(|2)(N) \
+                      /dev/null)"}%%[# ]*}//,/ }
+      ${=${(f)"$(cat /etc/hosts(|)(N) <<(ypcat hosts 2>/dev/null))"}%%\#*}
+      ${=${${${${(@M)${(f)"$(<~/.ssh/config)"}:#Host *}#Host }:#*\**}:#*\?*}}
+      )'

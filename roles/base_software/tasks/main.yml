@@ -10,6 +10,7 @@
     - curl
     - lsb-core
     - lynis
+    - fping
     - rsync
     - nmap
     - tcpdump
@@ -22,4 +23,8 @@
     - zsh
   tags:
     - base_software
-    - common
+
+- name: disable rpcbind
+  service: name=rpcbind enabled=no state=stopped
+  tags:
+    - base_software

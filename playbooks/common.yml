@@ -19,3 +19,4 @@
     - server_hardening
     - ssl
     - ssh
+    - rsyslog

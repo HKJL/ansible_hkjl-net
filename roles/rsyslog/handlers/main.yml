@@ -1,0 +1,7 @@
+---
+# This file contains the handlers for the rsyslog tasks
+
+- name: restart rsyslogd
+  service: name=rsyslog state=restarted
+  tags:
+    - rsyslog

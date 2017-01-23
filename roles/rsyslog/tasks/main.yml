@@ -1,0 +1,26 @@
+---
+# This task configures rsyslog on a host
+
+- name: install required packages
+  apt: name=rsyslog state=present
+  tags:
+    - rsyslog
+
+- name: create /var/spool/rsyslog
+  file: dest=/var/spool/rsyslog state=directory
+        owner={{root_user}} group=operator mode=0750
+  tags:
+    - rsyslog
+
+- name: install rsyslog.conf
+  template: src=rsyslog.conf.j2 dest=/etc/rsyslog.conf
+            owner={{root_user}} group={{root_group}} mode=0640
+  notify:
+    - restart rsyslogd
+  tags:
+    - rsyslog
+
+- name: enable and start during boot
+  service: name=rsyslog enabled=yes state=running
+  tags:
+    - rsyslog

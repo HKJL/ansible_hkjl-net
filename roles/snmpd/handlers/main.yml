@@ -1,0 +1,12 @@
+---
+# This file contains the handlers for the snmpd task
+
+- name: restart snmpd
+  service: name=snmpd state=restarted
+  tags:
+    - snmpd
+
+- name: save iptables
+  shell: "/root/bin/save-iptables </dev/null"
+  tags:
+    - snmpd

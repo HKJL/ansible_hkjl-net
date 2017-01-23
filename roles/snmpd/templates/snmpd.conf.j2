@@ -1,0 +1,30 @@
+com2sec paranoid  default         {{snmpd_community_paranoid}}
+com2sec readonly  default         {{snmpd_community_readonly}}
+com2sec readwrite default         {{snmpd_community_readwrite}}
+
+com2sec6 paranoid  default         {{snmpd_community_paranoid}}
+com2sec6 readonly  default         {{snmpd_community_readonly}}
+com2sec6 readwrite default         {{snmpd_community_readwrite}}
+
+group MyROSystem v1        paranoid
+group MyROSystem v2c       paranoid
+group MyROSystem usm       paranoid
+group MyROGroup v1         readonly
+group MyROGroup v2c        readonly
+group MyROGroup usm        readonly
+group MyRWGroup v1         readwrite
+group MyRWGroup v2c        readwrite
+group MyRWGroup usm        readwrite
+
+view all    included  .1                               80
+view system included  .1.3.6.1.2.1.1
+
+access MyROSystem ""     any       noauth    exact  system none   none
+access MyROGroup ""      any       noauth    exact  all    none   none
+access MyRWGroup ""      any       noauth    exact  all    all    none
+
+syslocation {{snmpd_syslocation}}
+syscontact {{snmpd_syscontact}}
+{% if snmpd_agentx_enabled %}
+master agentx
+{% endif %}

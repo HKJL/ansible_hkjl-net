@@ -7,6 +7,23 @@ root_group: 'root'
 # User/group for ssl related permissions
 ssl_group: 'ssl'
 
+# Group used to identify HKJL-NET operators
+ops_group: 'hkjl-ops'
+
+# Details of all HKJK-NET operators
+default_groups: 'cdrom,floppy,sudo,audio,dip,video,plugdev,netdev,ssh'
+operators:
+  - username: 'r3boot'
+    realname: 'Lex van Roon'
+    email: 'r3boot@r3blog.nl'
+    shell: '/bin/zsh'
+    group: 'hkjl-ops'
+  - username: 'casdr'
+    realname: 'Cas de Reuver'
+    email: 'cas@reuver.co'
+    shell: '/bin/bash'
+    group: 'hkjl-ops'
+
 # Default ntp servers
 ntp_servers:
   - '0.nl.pool.ntp.org'
@@ -16,6 +33,14 @@ ntp_servers:
 
 # Default ntp peers. Override this on a per-server basis
 ntp_peers: []
+
+# Default snmp settings. Override this on a per-location basis
+snmpd_community_paranoid: 'ld1MxuxZZKhUQuXiT2xo7xmsE'
+snmpd_community_readonly: 'K1HAlMcu30I6M60UrILwJUpcM'
+snmpd_community_readwrite: 'ydXp1QFAB69sZmWkUmPuWnVJs'
+snmpd_syslocation: 'LOCATION NOT CONFIGURED'
+snmpd_syscontact: 'ops@hkjl'
+snmpd_agentx_enabled: false
 
 # Defaults sysctl settings
 sysctl_settings:

@@ -1,0 +1,43 @@
+---
+# This task configures ldap on a node
+
+- name: install required packages
+  apt: name={{item}} state=present
+  with_items:
+    - snmp
+    - snmpd
+    - snmp-mibs-downloader
+  tags:
+    - snmpd
+
+- name: install snmpd.conf
+  template: src=snmpd.conf.j2 dest=/etc/snmp/snmpd.conf
+            owner={{root_user}} group={{root_group}} mode=0640
+  notify:
+    - restart snmpd
+  tags:
+    - snmpd
+
+- name: add iptables rule
+  iptables:
+    action: insert
+    ip_version: "{{ item }}"
+    chain: FROM_NMS
+    match: udp
+    protocol: udp
+    destination_port: 161
+    ctstate: NEW
+    jump: ACCEPT
+    comment: Allow inbound snmp access
+  with_items:
+    - ipv4
+    - ipv6
+  notify:
+    - save iptables
+  tags:
+    - snmpd
+
+- name: enable and start during boot
+  service: name=snmpd enabled=yes state=running
+  tags:
+    - snmpd

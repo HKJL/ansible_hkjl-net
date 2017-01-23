@@ -1,0 +1,10 @@
+---
+# This playbook contains the common tasks which are applied to all nodes in
+# the HKJL network.
+
+- name: Configure all IX servers
+  hosts: ix_servers
+  sudo: yes
+  sudo_user: root
+  roles:
+    - ix_bridge

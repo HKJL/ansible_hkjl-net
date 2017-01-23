@@ -1,0 +1,25 @@
+---
+# This role configures an HKJL IX bridge
+
+- name: setup bridge interface
+  template:
+    src: 'bridge_interface.j2'
+    dest: '/etc/network/interfaces.d/{{ix_bridge.name}}'
+    owner: '{{root_user}}'
+    group: '{{root_group}}'
+    mode: '0644'
+  tags:
+    - ix_bridge
+
+- name: check if bridge interface is up
+  shell: '/sbin/ip link show dev {{ix_bridge.name}}'
+  register: bridge_device
+  ignore_errors: True
+  tags:
+    - ix_bridge
+
+- name: activate bridge interface
+  shell: "/sbin/ifup {{ix_bridge.name}}"
+  when: bridge_device|failed
+  tags:
+    - ix_bridge

@@ -1,0 +1,11 @@
+---
+
+# Bridge details
+ix_bridge:
+  name: br_hkjl
+  ipv4:
+    address: '172.31.42.254'
+    netmask: '255.255.255.0'
+  mtu: 1280
+  ports:
+    - hkjl

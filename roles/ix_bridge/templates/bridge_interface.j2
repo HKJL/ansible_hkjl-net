@@ -1,0 +1,6 @@
+auto {{ix_bridge.name}}
+iface {{ix_bridge.name}} inet static
+  address {{ix_bridge.ipv4.address}}
+  netmask {{ix_bridge.ipv4.netmask}}
+  mtu {{ix_bridge.mtu}}
+  bridge_ports{% for port in ix_bridge.ports %} {{port}}{% endfor %}

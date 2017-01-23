@@ -3,3 +3,4 @@
 # entrypoint to configure the entire network
 
 - include: 'playbooks/common.yml'
+- include: 'playbooks/ix_servers.yml'

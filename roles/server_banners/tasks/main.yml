@@ -1,0 +1,22 @@
+---
+# This role configures various banners as seen on the system
+
+- name: setup /etc/issue
+  copy:
+    src: "issue"
+    dest: "/etc/issue.net"
+    owner: "{{root_user}}"
+    group: "{{root_group}}"
+    mode: "0644"
+  tags:
+    - server_banners
+
+- name: setup /etc/motd
+  template:
+    src: "motd.j2"
+    dest: "/etc/motd"
+    owner: "{{root_user}}"
+    group: "{{root_group}}"
+    mode: "0644"
+  tags:
+    - server_banners

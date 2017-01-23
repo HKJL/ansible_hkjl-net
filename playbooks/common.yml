@@ -18,6 +18,7 @@
     - ntp
     - sudo
     - server_hardening
+    - server_banners
     - ssl
     - ssh
     - rsyslog

@@ -1,0 +1,80 @@
+---
+# This task configures ssh on a node
+
+- name: install sshd
+  apt: name=openssh-server state=present
+  tags:
+    - ssh
+
+- name: install /etc/ssh/sshd_config
+  template: src=sshd_config.j2 dest=/etc/ssh/sshd_config
+            owner={{root_user}} group={{root_group}} mode=0644
+  notify:
+    - restart sshd
+  tags:
+    - ssh
+
+- name: install custom moduli
+  copy: src=moduli dest=/etc/ssh/moduli
+        owner={{root_user}} group={{root_group}} mode=0644
+  notify:
+    - restart sshd
+  tags:
+    - ssh
+
+- name: remove insecure keys
+  file: dest=/etc/ssh/{{item}} state=absent
+  with_items:
+    - ssh_host_dsa_key
+    - ssh_host_dsa_key.pub
+    - ssh_host_ecdsa_key
+    - ssh_host_ecdsa_key.pub
+  notify:
+    - restart sshd
+  tags:
+    - ssh
+
+- name: check keysize of RSA key
+  shell: "ssh-keygen -l -f /etc/ssh/ssh_host_rsa_key | grep -q '^4096'"
+  register: large_rsa_key
+  ignore_errors: True
+  tags:
+    - ssh
+
+- name: remove insecure rsa key
+  shell: "rm -f /etc/ssh/ssh_host_rsa_key*"
+  when: large_rsa_key|failed
+  tags:
+    - ssh
+
+- name: generate 4096-bit rsa key
+  shell: "ssh-keygen -b 4096 -t rsa -f /etc/ssh/ssh_host_rsa_key -N ''"
+  when: large_rsa_key|failed
+  notify:
+    - restart sshd
+  tags:
+    - ssh
+
+- name: add iptables rule
+  iptables:
+    action: insert
+    ip_version: "{{item}}"
+    chain: FROM_TRUSTED
+    match: tcp
+    protocol: tcp
+    destination_port: 22
+    ctstate: NEW
+    jump: ACCEPT
+    comment: Allow inbound ssh access
+  with_items:
+    - "ipv4"
+    - "ipv6"
+  notify:
+    - save iptables
+  tags:
+    - ssh
+
+- name: enable and start during boot
+  service: name=ssh enabled=yes state=running
+  tags:
+    - ssh

@@ -18,3 +18,4 @@
     - sudo
     - server_hardening
     - ssl
+    - ssh

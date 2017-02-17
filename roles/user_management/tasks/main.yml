@@ -78,3 +78,18 @@
     - {src: 'dot_zshrc', dst: '.zshrc', mode: '0640'}
   tags:
     - user_management
+
+- name: setup files in /home/casdr
+  copy:
+    src: "casdr/{{item.src}}"
+    dest: "/home/casdr/{{item.dst}}"
+    owner: "casdr"
+    group: "{{ops_group}}"
+    mode: "{{item.mode}}"
+  with_items:
+    - {src: 'dot_aliases', dst: '.aliases', mode: '0640'}
+    - {src: 'dot_authorized_keys', dst: '.ssh/authorized_keys', mode: '0400'}
+    - {src: 'dot_dircolors.db', dst: '.dircolors.db', mode: '0640'}
+    - {src: 'dot_zshrc', dst: '.zshrc', mode: '0640'}
+  tags:
+    - user_management

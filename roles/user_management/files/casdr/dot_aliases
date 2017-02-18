@@ -1,0 +1,8 @@
+alias systemctl='sudo systemctl'
+alias reboot='systemctl reboot'
+alias poweroff='systemctl poweroff'
+alias dstat='dstat --nocolor'
+alias ping='fping -l'
+alias ping6='fping6 -l'
+alias grep='grep --color=auto'
+alias egrep='egrep --color=auto'
